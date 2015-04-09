@@ -1,0 +1,138 @@
+This is a revised version of autodock.py, the Autodock/Vina plugin for PyMol
+by Daniel Seeliger.  See "http://wwwuser.gwdg.de/~dseelig/adplugin.html
+for the original release.
+
+The revisions made here are in an attempt to adapt this plugin, which works
+well with Python 2.7.9 and PrMOL 1.7.x on Linux or Mac for use on Windows.
+As of 28 March 2015, this version now appears to work reasonably well under
+both OS X and Windows XP.  Further work and a proper installer will be needed.
+
+  -- H. J. Bernstein, yayahjb@gmail.com
+
+This copyright notice for the original code is:
+
+# Autodock/Vina plugin  Copyright Notice
+# ============================
+#
+# ----------------------------------------------------------------------
+# Autodock/Vina plugin is Copyright (C) 2009 -- 2015 by Daniel Seeliger
+#
+#                        All Rights Reserved
+#
+# EFFECTIVE 28 MARCH 2015, YOU MAY REDISTRBUTE THE AUTODOCK/VINA PLUGIN
+# UNDER THE TERMS OF THE LGPL
+#
+#************************* LGPL NOTICES *******************************
+#                                                                    *
+# This plugin is free software; you can redistribute it and/or      *
+# modify it under the terms of the GNU Lesser General Public         *
+# License as published by the Free Software Foundation; either       *
+# version 2.1 of the License, or (at your option) any later version. *
+#                                                                    *
+# This plugin is distributed in the hope that it will be useful,    *
+# but WITHOUT ANY WARRANTY; without even the implied warranty of     *
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  *
+# Lesser General Public License for more details.                    *
+#                                                                    *
+# You should have received a copy of the GNU Lesser General Public   *
+# License along with this plugin; if not, write to the Free         *
+# Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,    *
+# MA  02110-1301  USA                                                *
+#                                                                    *
+#*********************************************************************/
+#
+# ORIGINAL AUTODOCK/VINA NOTICES APPLICABLE TO VERSIONS PRIOR TO
+# 28 MARCH 2015
+#
+# The Autodock/Vina plugin source code is copyrighted, but you can
+# freely use and copy it as long as you don't change or remove any of
+# the copyright notices.
+#
+# Permission to use, copy, modify, distribute, and distribute modified
+# versions of this software and its documentation for any purpose and
+# without fee is hereby granted, provided that the above copyright
+# notice appear in all copies and that both the copyright notice and
+# this permission notice appear in supporting documentation, and that
+# the name of Daniel Seeliger not be used in advertising or publicity
+# pertaining to distribution of the software without specific, written
+# prior permission.
+#
+# DANIEL SEELIGER DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+# SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+# FITNESS.  IN NO EVENT SHALL DANIEL SEELIGER BE LIABLE FOR ANY
+# SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+# RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+# CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+# CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# ----------------------------------------------------------------------
+
+The revisions here are by Herbert J. Bernstein, 6 - 28 March 2015, with the
+intention of incorporating the plugin within the larger ProMOL package releases
+under the GPL.  With the agreement of Daniel Seeliger, the Autodock/Vina
+plugin is now under the LGPL. All warranties are also disclaimed by
+Herbert J. Bernstein.
+
+Note:  As a derived work, the copyright of _all_ plugin versions made from
+Daniel Seeliger's version remain under his copyright.
+
+See the svn change history for the revisions made.
+
+  -- H. J. Bernstein, yayahjb@gmail.com
+
+INSTALLATION INSTRUCTIONS
+
+1.  Autodock 4:  Autodock 4 and AutodockTools 4 is a product of the Scripps
+Research Institute.  To install this plugin, you first must install Autodock 4,
+including autodock4, autogrid4, and vina.  See
+http://autodock.scripps.edu/
+
+2.  MGLTools 1.5.7:  You need MGLTools for operation of this plugin, also from
+the Scripps Research Institute.  See http://http://mgltools.scripps.edu/.  The
+plugin has been test both with MGLTools 1.5.6 and MGLTools 1.5.7 RC1.  1.5.7
+is recommended.
+
+3.  Python 2.7.9:  While portions of the Autodoc system come with an internal
+version of python, it is helpful to have a system installation of Python 2.7.9.
+See https://www.python.org/downloads/release/python-279/
+
+4.  PyMOL 1.7:  The plugin is a plugin for the PyMOL molecular visualization
+program PyMOL developed by the late Warren Delano and not maintained by
+Schrodinger LLC.  See http://www.pymol.org for the Schrodinger-supported version.
+See http://sourceforge.net/projects/pymol/, http://www.pymolwiki.org,
+http://www.pymolwiki.org/index.php/Windows_Install,
+http://www.pymolwiki.org/index.php/MAC_Install and
+http://www.pymolwiki.org/index.php/Linux_Install for additional options
+
+5.  Use the standard PyMOL Plugin manager to install autodock.py from this kit
+as a plugin.
+
+6.  Several enviroment variables may be set to simplify configuration:
+
+    ADPLUGIN_PATH  -- the contents of this variable with be copied to PATH
+before executing threads and processes from the script.  You should put
+paths for the internal MGLTools version of python, as well as for autodock4,
+autogrid4 and vina _before_ the other path elements appropriate for your system.
+Then you can use these program names without paths in the configuration.
+
+    ADPLUGIN_PYTHONHOME, ADPLUGIN_PYTHONPATH  -- the contents of these variables
+will be copied to PYTHONHOME and PYTHONPATH before executing threads and
+processes from the script.  You should set these to values appropriate for the
+MGLTools version of python, which may otherwise conflict with the system version
+you use to start PyMOL
+
+    ADPLUGIN_FONT -- the contents of this variable may be used to override the
+default "Courier 10" font used by the plugin
+
+7.  In configuring AutoDockTools  Utilities24 configuration entry, you are giving
+a path to various python scripts.  It is important that your system process these
+scripts with the correct version of python from MGLTools.  It helps to prefix
+the path with "python " and set ADPLUGIN_PATH, ADPLUGIN_PYTHONHOME,  and
+ADPLUGIN_PYTHONPATH to values that with point to the MGLTools copy of python.
+For example in a Mac MGLTools 1.5.7rc1 installation, appropriate lines to place
+in .bashrc would be
+
+export ADPLUGIN_PATH=/Library/MGLTools/1.5.7rc1/bin:$PATH
+export ADPLUGIN_PYTHONHOME=/Library/MGLTools/1.5.7rc1
+export ADPLUGIN_PYTHONPATH=/Library/MGLTools/1.5.7rc1/MGLToolsPckgs:/Library/MGLTools/1.5.7rc1/lib/python2.7
+
+
